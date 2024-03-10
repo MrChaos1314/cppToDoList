@@ -44,6 +44,18 @@ void pushTasksInList(ifstream &myTasks, vector<toDoElement> &tasks){
     myTasks.close();
 }
 
+void setTaskDone(ifstream &myTasks, vector<toDoElement> &tasks){
+    string fileOutput;
+    int numberOfTask;
+    cin >> numberOfTask;
+    while(getline(myTasks, fileOutput)){
+        if(tasks.at(numberOfTask).getTask() == fileOutput){
+            //suche zeile und lösche diese
+        }
+    }
+    myTasks.close();
+}
+
 void readTxt(ifstream &myTasks){
     int counter = 0;
     string fileOutput;
@@ -69,10 +81,6 @@ void clsScr(){
 int main()
 {
     string cmd;
-    
-    
-
-    int numberOfTask = 0;
 
     vector<toDoElement> tasks;
 
@@ -83,7 +91,7 @@ int main()
 
     
     while(true){
-        cout << "Was wollen Sie tun?\n \nwrite: Aufgabe hinzufügen \nread: Zeige alle Aufgaben \nend: Beenden \n";
+        cout << "Was wollen Sie tun?\n \nwrite: Aufgabe hinzufügen \nread: Zeige alle Aufgaben\n done: Setze n. Aufgabe auf gemacht \nend: Beenden \n";
         getline(cin, cmd);
 
         if(cmd == "end"){
@@ -102,10 +110,18 @@ int main()
             cout << endl;
             system("pause");
             
+        }else if(cmd == "done"){
+            clsScr();
+            cout << "Wähle welche Aufgabe fertig ist: \n\n";
+            readTxt(myTasks);
+            cout << endl;
+
         }
         clsScr();
         if(cin.fail()){
             cin.clear();
+            cout << "Zahl als uchstabe eingegeben! \n";
+            system("pause");
         }
     }
 
