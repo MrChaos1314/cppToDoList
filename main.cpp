@@ -11,17 +11,20 @@ class toDoElement{
         bool done;
         string task;
         
-        toDoElement(string task, bool done = false){
-            this->task = task;
-            this->done = done;
-        }
-
         bool isTaskDone(){
             return done;
         }
 
         string getTask(){
             return task;
+        }
+
+        void setTask(string pTask){
+            task = pTask;
+        }
+
+        void setDone(bool pDone){
+            done = pDone;
         }
 
 };
@@ -31,15 +34,21 @@ void writeTask(vector<toDoElement> &tasks){
     myTasks.open(fileLocation, std::ios::app);
     string task;
     getline(cin, task);
-    myTasks << task << endl;
+    toDoElement toDo;
+    toDo.setTask(task);
+    tasks.push_back(toDo);
+    myTasks << toDo.getTask() << endl;
     myTasks.close();
-    tasks.push_back(task);
+    
 }
 
 void pushTasksInList(ifstream &myTasks, vector<toDoElement> &tasks){
     string fileOutput;
+    myTasks.open(fileLocation);
     while(getline(myTasks, fileOutput)){
-        tasks.push_back(fileOutput);
+        toDoElement temp;
+        temp.setTask(fileOutput);
+        tasks.push_back(temp);
     }
     myTasks.close();
 }
@@ -49,27 +58,27 @@ void setTaskDone(ifstream &myTasks, vector<toDoElement> &tasks){
     int numberOfTask;
     cin >> numberOfTask;
     while(getline(myTasks, fileOutput)){
-        if(tasks.at(numberOfTask).getTask() == fileOutput){
-            //suche zeile und lösche diese
+        if(tasks.at(numberOfTask).getTask() == fileOutput){ // <--- Anders machen
+            cout << "success";
+            system("pause");
         }
     }
     myTasks.close();
 }
 
 void readTxt(ifstream &myTasks){
-    int counter = 0;
     string fileOutput;
+    toDoElement temp;
     myTasks.open(fileLocation);
     while(getline(myTasks, fileOutput)){
-        counter++;
-        cout << counter << ". " << fileOutput << endl;
+        cout << fileOutput << endl;
     }
     myTasks.close();
 }
 
 void printToDo(vector<toDoElement> &tasks){
     for(toDoElement i : tasks){
-        cout << i.getTask();
+        cout << i.getTask() << endl;
     }
 }
 
@@ -84,14 +93,13 @@ int main()
 
     vector<toDoElement> tasks;
 
-    ifstream myTasks(fileLocation);
+    ifstream myTasks;
 
 
-    pushTasksInList(myTasks, tasks);
-
+    pushTasksInList(myTasks, tasks); 
     
     while(true){
-        cout << "Was wollen Sie tun?\n \nwrite: Aufgabe hinzufügen \nread: Zeige alle Aufgaben\n done: Setze n. Aufgabe auf gemacht \nend: Beenden \n";
+        cout << "Was wollen Sie tun?\n \nwrite: Aufgabe hinzufügen \nread: Zeige alle Aufgaben \ndone: Setze n. Aufgabe auf gemacht \nend: Beenden \n";
         getline(cin, cmd);
 
         if(cmd == "end"){
@@ -106,14 +114,15 @@ int main()
         }else if(cmd == "read"){
             clsScr();
             cout << "Ihre Aufgaben: \n\n";
-            readTxt(myTasks);
+            printToDo(tasks);
             cout << endl;
             system("pause");
             
         }else if(cmd == "done"){
             clsScr();
             cout << "Wähle welche Aufgabe fertig ist: \n\n";
-            readTxt(myTasks);
+            printToDo(tasks);
+            setTaskDone(myTasks, tasks);
             cout << endl;
 
         }
