@@ -56,29 +56,35 @@ void pushTasksInList(ifstream &myTasks, vector<toDoElement> &tasks){
 void setTaskDone(ifstream &myTasks, vector<toDoElement> &tasks){
     string fileOutput;
     int numberOfTask;
+    int cursor;
     cin >> numberOfTask;
-    while(getline(myTasks, fileOutput)){
-        if(tasks.at(numberOfTask).getTask() == fileOutput){ // <--- Anders machen
-            cout << "success";
-            system("pause");
+    myTasks.open(fileLocation);
+    while(getline(myTasks, fileOutput)){        
+        if(tasks.at(numberOfTask-1).getTask() == fileOutput){
+                tasks.erase(tasks.begin() + numberOfTask -1);
         }
     }
     myTasks.close();
+    
 }
 
 void readTxt(ifstream &myTasks){
     string fileOutput;
     toDoElement temp;
+    int counter = 1;
     myTasks.open(fileLocation);
     while(getline(myTasks, fileOutput)){
-        cout << fileOutput << endl;
+        cout << counter << ". " << fileOutput << endl;
+        counter++;
     }
     myTasks.close();
 }
 
 void printToDo(vector<toDoElement> &tasks){
+    int counter = 1;
     for(toDoElement i : tasks){
-        cout << i.getTask() << endl;
+        cout << counter << ". " << i.getTask() << endl;
+        counter++;
     }
 }
 
