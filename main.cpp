@@ -29,6 +29,12 @@ class toDoElement{
 
 };
 
+void clsScr();
+void readTxt(ifstream &myTasks);
+void printToDo(vector<toDoElement> &tasks);
+
+
+
 void writeTask(vector<toDoElement> &tasks){
     ofstream myTasks;
     myTasks.open(fileLocation, std::ios::app);
@@ -37,7 +43,7 @@ void writeTask(vector<toDoElement> &tasks){
     toDoElement toDo;
     toDo.setTask(task);
     tasks.push_back(toDo);
-    myTasks << toDo.getTask() << endl;
+    myTasks << tasks.back().getTask() << endl;
     myTasks.close();
     
 }
@@ -57,15 +63,29 @@ void setTaskDone(ifstream &myTasks, vector<toDoElement> &tasks){
     string fileOutput;
     int numberOfTask;
     int cursor;
-    cin >> numberOfTask;
+    bool checkDone = false;
+    while(checkDone == false){
+        cin >> numberOfTask;
+        if(cin.fail()){
+            cin.clear(); // -> cleared nicht alles T-T
+            cin.ignore(); // deswegen der schmog hier
+            clsScr();
+            
+            cout << "Wähle welche Aufgabe fertig ist: \n\n";
+            
+            printToDo(tasks);
+            continue;
+        }
+        checkDone = true;
+    }
     myTasks.open(fileLocation);
     while(getline(myTasks, fileOutput)){        
         if(tasks.at(numberOfTask-1).getTask() == fileOutput){
-                tasks.erase(tasks.begin() + numberOfTask -1);
+            tasks.erase(tasks.begin() + numberOfTask -1);
+            break;
         }
     }
     myTasks.close();
-    
 }
 
 void readTxt(ifstream &myTasks){
@@ -88,6 +108,19 @@ void printToDo(vector<toDoElement> &tasks){
     }
 }
 
+void saveAndExit(vector<toDoElement> &tasks){
+    ofstream inFile;
+    inFile.open(fileLocation);
+    inFile << "";
+    inFile.close();
+
+    inFile.open(fileLocation, std::ios::app);
+    for(toDoElement i : tasks){
+        inFile << i.getTask() << endl;
+    }
+    
+}
+
 void clsScr(){
     system("cls");
 }
@@ -105,10 +138,11 @@ int main()
     pushTasksInList(myTasks, tasks); 
     
     while(true){
-        cout << "Was wollen Sie tun?\n \nwrite: Aufgabe hinzufügen \nread: Zeige alle Aufgaben \ndone: Setze n. Aufgabe auf gemacht \nend: Beenden \n";
+        cout << "Was wollen Sie tun?\n \nwrite: Aufgabe hinzufügen \nread: Zeige alle Aufgaben \ndone: Setze n. Aufgabe auf gemacht \nend: Speichern & Beenden \n";
         getline(cin, cmd);
 
         if(cmd == "end"){
+            saveAndExit(tasks);
             return 0;
 
         }else if(cmd == "write"){
